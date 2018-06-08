@@ -156,7 +156,6 @@ function nat_custom_meta_boxes() {
 	add_meta_box( 'project-id-meta-box', __( 'Project Name', 'textdomain' ), 'nat_project_meta', 'nat_case_studies', 'side', 'high' );
 
 	function nat_project_meta( $post ) {
-		// Display code/markup goes here. Don't forget to include nonces!
 		wp_nonce_field( basename( __FILE__ ), 'nat_nonce' );
 		$nat_stored_meta = get_post_meta( $post->ID );
 		?>
@@ -167,7 +166,19 @@ function nat_custom_meta_boxes() {
 
 		<?php
 	}
+	add_meta_box( 'client-logo-meta-box', __( 'Client Logo', 'textdomain' ), 'nat_logo_meta', 'nat_case_studies', 'side', 'low' );
 
+	function nat_logo_meta( $post ) {
+		wp_nonce_field( basename( __FILE__ ), 'nat_nonce' );
+		$nat_stored_meta = get_post_meta( $post->ID );
+		?>
+
+		<p>
+			<input type="text" name="nat-logo" id="nat-logo" value="<?php if(isset($nat_stored_meta['nat-logo'])) echo $nat_stored_meta['nat-logo'][0]; ?>" />
+		</p>
+
+		<?php
+	}
 }
 
 function nat_save_meta_box( $post_id ) {
@@ -187,51 +198,9 @@ function nat_save_meta_box( $post_id ) {
 		update_post_meta( $post_id, 'nat-project', sanitize_text_field( $_POST[ 'nat-project' ]));
 	}
 
+	if( isset( $_POST[ 'nat-logo' ])) {
+		update_post_meta( $post_id, 'nat-logo', sanitize_text_field( $_POST[ 'nat-logo' ]));
+	}
 }
 
 run_nat_case_studies();
-
-/* MEDIA UPLOAD TEST TEST TEST */
-//Assign a name to your tab
-function upload_test_media_menu($tabs) {
-	$tabs['test_upload']='Test Upload';
-	return $tabs;
-}
-//Adds your scripts to your plugin
-function upload_test_scripts() {	
-	//Adds css
-	$myStyleUrl = plugins_url('upload-media.css', __FILE__);
-	wp_register_style('myStyleSheets', $myStyleUrl);
-	wp_enqueue_style( 'myStyleSheets');
-	//Adds JQuery 
-	wp_deregister_script('jquery');
-  	wp_register_script( 'jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js');
-  	wp_enqueue_script( 'jquery' );
-	//Adds your custom script
-	wp_deregister_script( 'upload-media-script' );
-	wp_register_script( 'upload-media-script', '/wp-content/plugins/upload-media/upload-media.js');
-	wp_enqueue_script( 'upload-media-script' );
-}
-//This is our form for the plugin
-function upload_test_upload_form () {
-	//echos the tabs at the top of the media window
-	media_upload_header();
-	//Adds your javascript
-	upload_test_scripts();
-	?>
-	<div class="test-form">
-		<input type='text' id='name' />
-		<input id='insert_shortcode' type='button' class='button' value='Insert Shortcode'>
-	</div> 	
-
-<?php }
-//Returns the iframe that your plugin will be returned in
-function upload_test_menu_handle() {
-	return wp_iframe('upload_test_upload_form');
-}
-//Needed script to make sure wordpresses media upload scripts are inplace
-wp_enqueue_script('media-upload');
-//Adds your tab to the media upload button
-add_filter('media_upload_tabs', 'upload_test_media_menu');
-//Adds your menu handle to when the media upload action occurs
-add_action('media_upload_test_upload', 'upload_test_menu_handle');
