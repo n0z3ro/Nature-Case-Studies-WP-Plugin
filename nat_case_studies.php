@@ -71,9 +71,10 @@ function nat_case_studies_custom_post_type() {
 				'name' => __('Case Studies'),
 				'singular_name' => __('Case Study'),
 			),
-			'supports' => array('title', 'editor', 'thumbnail'),
+			'supports' => array('title', 'editor', 'thumbnail', 'custom-fields'),
 			'public' => true,
 			'has_archive' => true,
+			'rewrite' => array('slug' => 'case_studies')
 		)
 	);
 
