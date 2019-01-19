@@ -155,7 +155,6 @@ function nat_case_studies_custom_post_type() {
 function nat_custom_meta_boxes() {
 	//Add Meta Boxes
 	add_meta_box( 'project-id-meta-box', __( 'Project Name', 'textdomain' ), 'nat_project_meta', 'nat_case_studies', 'side', 'high' );
-
 	function nat_project_meta( $post ) {
 		wp_nonce_field( basename( __FILE__ ), 'nat_nonce' );
 		$nat_stored_meta = get_post_meta( $post->ID );
@@ -167,8 +166,8 @@ function nat_custom_meta_boxes() {
 
 		<?php
 	}
-	add_meta_box( 'client-logo-meta-box', __( 'Client Logo', 'textdomain' ), 'nat_logo_meta', 'nat_case_studies', 'side', 'low' );
 
+	add_meta_box( 'client-logo-meta-box', __( 'Client Logo', 'textdomain' ), 'nat_logo_meta', 'nat_case_studies', 'side', 'low' );
 	function nat_logo_meta( $post ) {
 		wp_nonce_field( basename( __FILE__ ), 'nat_nonce' );
 		$nat_stored_meta = get_post_meta( $post->ID );
@@ -176,6 +175,19 @@ function nat_custom_meta_boxes() {
 
 		<p>
 			<input type="text" name="nat-logo" id="nat-logo" value="<?php if(isset($nat_stored_meta['nat-logo'])) echo $nat_stored_meta['nat-logo'][0]; ?>" />
+		</p>
+
+		<?php
+	}
+
+	add_meta_box( 'alt-thumb-meta-box', __( 'Alternate Thumbnail', 'textdomain' ), 'nat_thumb_meta', 'nat_case_studies', 'side', 'low' );
+	function nat_thumb_meta( $post ) {
+		wp_nonce_field( basename( __FILE__ ), 'nat_nonce' );
+		$nat_stored_meta = get_post_meta( $post->ID );
+		?>
+
+		<p>
+			<input type="text" name="nat-thumb" id="nat-thumb" value="<?php if(isset($nat_stored_meta['nat-thumb'])) echo $nat_stored_meta['nat-thumb'][0]; ?>" />
 		</p>
 
 		<?php
@@ -202,6 +214,10 @@ function nat_save_meta_box( $post_id ) {
 	if( isset( $_POST[ 'nat-logo' ])) {
 		update_post_meta( $post_id, 'nat-logo', sanitize_text_field( $_POST[ 'nat-logo' ]));
 	}
+	if( isset( $_POST[ 'nat-thumb' ])) {
+		update_post_meta( $post_id, 'nat-thumb', sanitize_text_field( $_POST[ 'nat-thumb' ]));
+	}
+
 }
 
 run_nat_case_studies();
